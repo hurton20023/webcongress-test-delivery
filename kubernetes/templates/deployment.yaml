@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: webcongress-test-delivery
+  name: { { .Release.Name } }
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webcongress-test-delivery
+  template:
+    metadata:
+      labels:
+        app: webcongress-test-delivery
+    spec:
+      containers:
+        - image: { { .Values.image.repository } }
+          name: sample
+      imagePullSecrets:
+        - name: webcongress-test-delivery-helm-secret
