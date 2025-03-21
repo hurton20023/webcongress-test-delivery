@@ -1,14 +1,15 @@
+import { getToken } from "next-auth/jwt";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const sessionRes = await fetch(`${request.nextUrl.origin}/api/auth/session`, {
-    headers: { cookie: request.headers.get("cookie") || "" },
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
   });
 
-  const session = await sessionRes?.json();
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/users") && !session?.user) {
+  if (pathname.startsWith("/users") && !token) {
     return NextResponse.json(
       { error: "Unauthorized access." },
       { status: 401 }
