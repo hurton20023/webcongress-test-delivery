@@ -6,12 +6,13 @@ export async function middleware(request: NextRequest) {
   });
 
   const session = await sessionRes?.json();
-
-
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/users") && !session.user) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (pathname.startsWith("/users") && !session?.user) {
+    return NextResponse.json(
+      { error: "Unauthorized access." },
+      { status: 401 }
+    );
   }
 
   return NextResponse.next();
